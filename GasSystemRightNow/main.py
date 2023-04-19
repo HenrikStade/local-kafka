@@ -5,7 +5,7 @@ from time import sleep
 from produce import make_producer, on_delivery
 from dsnkafka.config import config, DEFAULT_TOPIC
 
-FIRSTEEDSDATE = date(2023,1,1)
+FIRSTEEDSDATE = date(2023,4,18)
 
 producer = make_producer()
 
