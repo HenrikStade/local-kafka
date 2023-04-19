@@ -29,38 +29,31 @@ def on_delivery(err, msg) -> None:
         )
 
 
-def main():
-    """_summary_"""
-    logger.info("Get schema registry client.")
-    schema_registry_client = get_schema_registry_client(
-        config=config["schema_registry"]
-    )
-    logger.info(f"Get schema for topic {DEFAULT_TOPIC}.")
-    value_schema = get_latest_topic_schema(
-        schema_registry_client, topic=DEFAULT_TOPIC)
 
-    logger.info(f"Add kafka configuration with `get_serilizer_string_avro()`.")
-    kafka_config = config["kafka"] | get_serilizer_string_avro(
-        schema_registry_client, value_schema
-    )
+#def make_producer():
+"""_summary_"""
+#logger.info("Get schema registry client.")
+schema_registry_client = get_schema_registry_client(config=config["schema_registry"])
+#logger.info(f"Get schema for topic {DEFAULT_TOPIC}.")
+value_schema = get_latest_topic_schema(schema_registry_client, topic=DEFAULT_TOPIC)
 
-    logger.info("Get `SerializingProducer()`.")
-    producer = SerializingProducer(kafka_config)
+#logger.info(f"Add kafka configuration with `get_serilizer_string_avro()`.")
+#kafka_config = config["kafka"] | get_serilizer_string_avro(
+#    schema_registry_client, value_schema
+#)
+kafka_config = {**config["kafka"],**get_serilizer_string_avro(schema_registry_client, value_schema)}
 
-    for i in range(100):
+logger.info("Get `SerializingProducer()`.")
+producer = SerializingProducer(kafka_config)
 
-        dm = DataModel(ID=str(i), VALUE=i + 3)
+#return producer
+for i in range(100):
 
-        producer.produce(
-            topic=DEFAULT_TOPIC,
-            key=str(i),
-            value=dm.as_dict,
-            on_delivery=on_delivery,
-        )
+    dm = DataModel(ID=str(i), VALUE=i + 3)
 
-    logger.info("Flush producer.")
-    producer.flush()
+    producer.produce(topic=DEFAULT_TOPIC,key=str(0),value=dm.as_dict,on_delivery=on_delivery)
 
+print(dm.as_dict)
 
-if __name__ == "__main__":
-    main()
+#logger.info("Flush producer.")
+    #producer.flush()

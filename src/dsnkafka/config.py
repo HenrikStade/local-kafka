@@ -4,6 +4,7 @@ import os
 import socket
 
 DEFAULT_URL: str = "dsnvm1.baekpetersen.dk"
+DEFAULT_TOPIC: str = "GasSystemRightNow2"
 
 config = {
     "schema_registry": {
